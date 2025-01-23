@@ -1,22 +1,28 @@
 package org.example.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import org.example.enumeration.Sesso;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "persone")
+
 public class Persona {
 
-    private long ID;
+    @Id
+    @GeneratedValue
+    private long id;
     private String nome;
     private String cognome;
+    @Column(unique = true)
     private String email;
     private LocalDate dataDiNascita;
+    @Enumerated(EnumType.STRING)
     private Sesso sesso;
+    @OneToMany(mappedBy = "persona")
     private List<Partecipazione> listaPartecipazioni;
 
     @ManyToOne
@@ -26,21 +32,21 @@ public class Persona {
     public Persona() {
     };
 
-    public Persona (String nome, String cognome, String email, LocalDate dataDiNascita, Sesso sesso, List<Partecipazione> listaPartecipazioni){
+    public Persona (String nome, String cognome, String email, LocalDate dataDiNascita, Sesso sesso){
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
         this.dataDiNascita = dataDiNascita;
         this.sesso = sesso;
-        this.listaPartecipazioni = listaPartecipazioni;
+        this.listaPartecipazioni = new ArrayList<>();
     }
 
     public long getID() {
-        return ID;
+        return id;
     }
 
     public void setID(long ID) {
-        this.ID = ID;
+        this.id = id;
     }
 
     public String getNome() {
@@ -94,7 +100,7 @@ public class Persona {
     @Override
     public String toString() {
         return "Persona{" +
-                "ID=" + ID +
+                "ID=" + id +
                 ", nome='" + nome + '\'' +
                 ", cognome='" + cognome + '\'' +
                 ", email='" + email + '\'' +

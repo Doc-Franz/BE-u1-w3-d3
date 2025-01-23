@@ -3,6 +3,7 @@ package org.example.entities;
 import jakarta.persistence.*;
 import org.example.enumeration.TipoEvento;
 
+import javax.xml.namespace.QName;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,38 +15,41 @@ public class Evento {
 
     @Id
     @GeneratedValue
-    private Long eventoId;
+    private Long id;
     @Column(nullable = false)
     private LocalDate data_evento;
     @Column(nullable = false)
     private String descrizione;
-    @Column
     private int numero_massimo_partecipanti;
-    @Column
+    @Enumerated(EnumType.STRING)
     private TipoEvento tipoEvento;
     @Column(nullable = false)
     private String titolo;
 
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private Location location;
     @OneToMany(mappedBy = "evento")
-    private List<Persona> listaInvitati = new ArrayList<>();
+    private List<Partecipazione> listaPartecipazioni;
 
     public Evento() {};
 
-    public Evento(LocalDate data_evento, String descrizione, int numero_massimo_partecipanti, TipoEvento tipoEvento, String titolo, List<Persona> listaInvitati) {
+    public Evento(LocalDate data_evento, String descrizione, int numero_massimo_partecipanti, TipoEvento tipoEvento, String titolo, Location location) {
         this.data_evento = data_evento;
         this.descrizione = descrizione;
         this.numero_massimo_partecipanti = numero_massimo_partecipanti;
         this.tipoEvento = tipoEvento;
         this.titolo = titolo;
-        this.listaInvitati = listaInvitati;
+        this.location = location;
+        this.listaPartecipazioni = new ArrayList<>();
     }
 
     public Long getId() {
-        return eventoId;
+        return id;
     }
 
     public void setId(Long id) {
-        this.eventoId = id;
+        this.id = id;
     }
 
     public LocalDate getData_evento() {
@@ -88,15 +92,33 @@ public class Evento {
         this.titolo = titolo;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public List<Partecipazione> getListaPartecipazioni() {
+        return listaPartecipazioni;
+    }
+
+    public void setListaPartecipazioni(List<Partecipazione> listaPartecipazioni) {
+        this.listaPartecipazioni = listaPartecipazioni;
+    }
+
     @Override
     public String toString() {
         return "Evento{" +
-                "id=" + eventoId +
+                "id=" + id +
                 ", data_evento=" + data_evento +
                 ", descrizione='" + descrizione + '\'' +
                 ", numero_massimo_partecipanti=" + numero_massimo_partecipanti +
                 ", tipoEvento=" + tipoEvento +
                 ", titolo='" + titolo + '\'' +
+                ", location=" + location +
+                ", listaPartecipazioni=" + listaPartecipazioni +
                 '}';
     }
 }
